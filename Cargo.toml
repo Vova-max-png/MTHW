@@ -1,0 +1,10 @@
+[package]
+name = "MTH"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.1.8", features = ["derive"] }
+futures = "0.3.27"
+markdown = "0.3.0"
+wry = "0.27.0"
