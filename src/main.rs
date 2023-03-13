@@ -1,5 +1,6 @@
 mod args;
 mod server;
+use server::MDServer;
 extern crate markdown;
 use std::fs;
 use args::*;
@@ -17,10 +18,11 @@ use wry::{
 fn main() -> wry::Result<()>{
     let args = Args::parse();
 
-    server::bind_listener();
-
-    let markdown = fs::read_to_string(args.path).unwrap();
+    let markdown = fs::read_to_string(&args.path).unwrap();
     let html = markdown::to_html(&markdown);
+
+    let mdserver = MDServer::new(Some(args.path.to_string()));
+    mdserver.listen(mdserver.stream);
 
     let event_loop = EventLoop::new();
     let window = WindowBuilder::new()
