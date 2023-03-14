@@ -5,32 +5,32 @@ use std::{
 };
 
 pub struct MDServer {
-    path: Option<String>,
-    stream: TcpListener,
+    path: String,
+    listener: TcpListener,
 }
 
 impl MDServer {
-    pub fn new(path: Option<String>) -> Self {
+    pub fn new(path: String) -> Self {
         let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
 
         Self {
             path: path,
-            stream: listener,
+            listener: listener,
         }
     }
 
-    pub async fn listen(&self, listener: TcpListener) {
+    pub async fn listen(&self, listener: &TcpListener) {
         for stream in listener.incoming() {
             let stream = stream.unwrap();
-            self.handle_connection(stream).await;
+            self.handle_connection(stream);
         }
     }
 
-    pub fn get_stream(&self) -> TcpListener {
-        self::TcpListener
+    pub fn get_listener(&self) -> &self::TcpListener {
+        &self.listener
     }
 
-    async fn handle_connection(&self, mut stream: TcpStream) {
+    fn handle_connection(&self, mut stream: TcpStream) {
         let buf_reader = BufReader::new(&mut stream);
         let http_request: Vec<_> = buf_reader
             .lines()
@@ -41,7 +41,7 @@ impl MDServer {
         println!("{:#?}", http_request);
 
         let status_line = "HTTP/1.1 200 OK";
-        let contents = fs::read_to_string("hello.md").unwrap();
+        let contents = fs::read_to_string(&self.path).unwrap();
         let length = contents.len();
         
         let response =

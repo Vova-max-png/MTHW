@@ -8,4 +8,5 @@ aurelius = "0.7.5"
 clap = { version = "4.1.8", features = ["derive"] }
 futures = "0.3.27"
 markdown = "0.3.0"
+tokio = { version = "1.14.0", features = ["rt", "macros", "io-util", "process", "rt-multi-thread"] }
 wry = "0.27.0"
