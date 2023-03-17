@@ -3,28 +3,34 @@ use wry::{
       event::{Event, StartCause, WindowEvent},
       event_loop::{ControlFlow, EventLoop},
       window::WindowBuilder,
-      window::Window,
+      window::Window, platform::run_return::EventLoopExtRunReturn,
     },
     webview::{WebViewBuilder, WebView},
 };
 
-struct window {
-    window: Window,
+pub struct MDWindow {
     webview: WebView,
-    event_loop: EventLoop,
+    event_loop: EventLoop<()>,
 }
 
-impl window {
-    pub fn create_window(&self, event_loop: &EventLoop<()>) -> wry::Result<Self> {
-        let event_loop = EventLoop::new();
+impl MDWindow {
+    pub fn new(event_loop: EventLoop<()>) -> Self {
         let window = WindowBuilder::new()
             .with_title("Hello World")
-            .build(&event_loop)?;
-        let _webview = WebViewBuilder::new(window)?
-            .with_url("localhost:7878")?
-            .build()?;
-        
-        event_loop.run(move |event, _, control_flow| {
+            .build(&event_loop).unwrap();
+
+        let _webview = WebViewBuilder::new(window).unwrap()
+            .with_url("localhost:7878").unwrap()
+            .build().unwrap();
+
+        Self {
+            webview: _webview,
+            event_loop,
+        }
+    }
+
+    pub async fn handle_window(&mut self) {
+        self.event_loop.run_return(move |event, _, control_flow| {
             *control_flow = ControlFlow::Wait;
         
         match event {
@@ -35,10 +41,5 @@ impl window {
             _ => (),
             }
         });
-    
-        Ok(Self {
-            window,
-            webview: _webview,
-        })
     }
 }

@@ -2,6 +2,7 @@ mod args;
 mod server;
 mod window;
 use server::MDServer;
+use window::*;
 extern crate markdown;
 use std::fs::{self, File};
 use std::io::Write;
@@ -20,7 +21,7 @@ use futures::executor::*;
 use tokio::{self, *};
 
 #[tokio::main]
-async fn main() -> wry::Result<()>{
+async fn main() -> wry::Result<()> {
     let args = Args::parse();
 
     let markdown = fs::read_to_string(&args.path).unwrap();
@@ -29,30 +30,12 @@ async fn main() -> wry::Result<()>{
     let mut output = File::create("index.html")?;
     write!(output, "{}", html)?;
 
-    let mdserver = MDServer::new("index.html".to_string());
+    let mut mdwindow = MDWindow::new(EventLoop::new());
+
+    let mdserver = MDServer::new("127.0.0.1:7878".to_string());
     tokio::join!(
         mdserver.listen(mdserver.get_listener()),
+        mdwindow.handle_window(),
     );
-
-    let window = window::create_window(&EventLoop::new());
-
-    window::create_window(&EventLoop::new());
-    let window = WindowBuilder::new()
-        .with_title("Hello World")
-        .build(&event_loop)?;
-    let _webview = WebViewBuilder::new(window)?
-        .with_url("localhost:7878")?
-        .build()?;
-    
-    event_loop.run(move |event, _, control_flow| {
-        *control_flow = ControlFlow::Wait;
-    
-    match event {
-        Event::WindowEvent {
-        event: WindowEvent::CloseRequested,
-            ..
-        } => *control_flow = ControlFlow::Exit,
-        _ => (),
-        }
-    });
+    Ok(())
 }

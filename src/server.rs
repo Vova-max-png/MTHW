@@ -4,6 +4,8 @@ use std::{
     fs,
 };
 
+use futures::*;
+
 pub struct MDServer {
     path: String,
     listener: TcpListener,
@@ -22,7 +24,7 @@ impl MDServer {
     pub async fn listen(&self, listener: &TcpListener) {
         for stream in listener.incoming() {
             let stream = stream.unwrap();
-            self.handle_connection(stream);
+            futures::join!(self.handle_connection(stream));
         }
     }
 
@@ -30,7 +32,7 @@ impl MDServer {
         &self.listener
     }
 
-    fn handle_connection(&self, mut stream: TcpStream) {
+    async fn handle_connection(&self, mut stream: TcpStream) {
         let buf_reader = BufReader::new(&mut stream);
         let http_request: Vec<_> = buf_reader
             .lines()
