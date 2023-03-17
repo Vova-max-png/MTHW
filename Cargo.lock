@@ -3,7 +3,7 @@
 version = 3
 
 [[package]]
-name = "MTH"
+name = "MTHW"
 version = "0.1.0"
 dependencies = [
  "aurelius",

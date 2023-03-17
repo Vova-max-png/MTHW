@@ -1,11 +1,11 @@
-# MTH
+# MTHW
 
-**MTH** - a webview utility to show markdown to html
+**MTHW** - a webview utility to show markdown to html
 
 # Instalation
 
 ## Cargo:
 
 ```
-cargo install MTH
+cargo install MTHW
 ```
