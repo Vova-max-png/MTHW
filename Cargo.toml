@@ -5,8 +5,8 @@ edition = "2021"
 authors = ["Cat"]
 description = "A webview utility to show markdown to html"
 license = "MIT"
-documentation = "github.com/Vova-max-png/MTH"
-repository = "github.com/Vova-max-png/MTH"
+documentation = "https://github.com/Vova-max-png/MTH"
+repository = "https://github.com/Vova-max-png/MTH"
 categories = ["Command line utilities"]
 
 [dependencies]
